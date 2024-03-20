@@ -1,0 +1,28 @@
+.li{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+p{
+    display: inline;
+    font-size: small;
+}
+
+
+@media (max-width: 384px) {
+   
+    button{
+        color: white !important;
+        padding: 1!important;
+        font-size: 11px !important;
+    }
+    .hidden{
+        display: none;
+    }
+    p{
+        display: block;
+        margin: 0;
+        font-size: 11px;
+    }
+  
+}

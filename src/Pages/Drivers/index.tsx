@@ -1,25 +1,26 @@
 import { useEffect, useState } from 'react'
 
 import { Layout } from '../Components/Layout/index'
-import { UserList } from './Components/UserList'
-import { UserInfo } from './Components/userInfo';
-import { Usersearch } from './Components/Usersearch';
+import { DriverList } from './Components/DriverList'
+import { DriverInfo } from './Components/DriverInfo';
+import { DriverSearch } from './Components/DriverSearch';
 
 
-export const Users = () => {
-  const [users, setUsers] = useState([]);
-  const [usersSearch, setUsersSearch] = useState('');
+export const Drivers = () => {
+  const [drivers, setDrivers] = useState([]);
+  const [driverSearch, setDriverSearch] = useState('');
   const [editMode, setEditMode] = useState(false);
-  const [nameUser, setNameUser] = useState('');
-  const [emailUser, setEmailUser] = useState('');
+  const [nameDriver, setNameDriver] = useState('');
+  const [idDriver, setIdDriver] = useState('');
+ 
 
   // Obtener los datos de los usuarios al cargar la pagina.
   useEffect(() => {
     const fetcData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/users');
+        const response = await fetch('http://localhost:3000/drivers');
         const data = await response.json()
-        setUsers(data);
+        setDrivers(data);
       } catch (error) {
         alert(`error servidor no cenectado: ${error}`)
       }
@@ -29,12 +30,12 @@ export const Users = () => {
 
 
   // Buscar Clientes
-  const searchUser = users.filter(user => {
-    return user.name.toLowerCase().includes(usersSearch)
+  const searchDrivers = drivers.filter(drive => {
+    return drive.name.toLowerCase().includes(driverSearch)
   })
 
   // Contar los usurio existentes
-  const userTotal = searchUser.length;
+  const driverTotal = searchDrivers.length;
 
   // Agregar usurios
   const handleAddUser = async (e) => {
@@ -42,16 +43,16 @@ export const Users = () => {
    
     const data = Object.fromEntries(new FormData(e.target))
     try {
-      const response = await fetch('http://localhost:3000/users', {
+      const response = await fetch('http://localhost:3000/drivers', {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
       const res = await response.json()
       if (res.statusCode === 409) {
-        alert("Usuarioya existe")
+        alert("Conductor existe")
       } else {
-        alert("Usuario creado")
+        alert("Conductor creado")
         window.location.reload();
       }
     } catch (error) {
@@ -62,7 +63,7 @@ export const Users = () => {
   const onDelete = async (id) => {
     alert("Esta seguro de que quire elimar")
     try {
-      await fetch(`http://localhost:3000/users/${id}`,
+      await fetch(`http://localhost:3000/drivers/${id}`,
         { method: "DELETE" })
       window.location.reload();
     } catch (error) {
@@ -76,17 +77,16 @@ export const Users = () => {
     e.preventDefault();
     try {
       const change = Object.fromEntries(new FormData(e.target))
-      const res = await fetch(`http://localhost:3000/users/${idUserForm}`,
+      const res = await fetch(`http://localhost:3000/drivers/${idDriver}`,
         {
           method: "PUT",
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(change)
         });
-
       if (res.status === 200) {
         alert("Datos Actulizados")
-        setNameUser("")
-        setEmailUser("")
+        setNameDriver('')
+        setIdDriver('')
         window.location.reload();
       }else{
         alert("Datos no Actulizados")
@@ -100,38 +100,43 @@ export const Users = () => {
   }
 
   //Edit Usuarios
-  const editUser = async (user) => {
-    setEditMode(true);
-    setIdUser(user.id);
-    setNameUser(user.name)
-    setEmailUser(user.mail)
+  const editUser = async (driver) => {
+    if(!editMode){
+      setIdDriver(driver.id);
+      setEditMode(true);
+      setNameDriver(driver.name)
+    }else{
+      setEditMode(false)
+    }
+  
+  
   }
 
   return (
     <Layout>
       <div>
-        <h1 className='navbar-brand'>Usuarios</h1>
+        <h1 className='navbar-brand'>Conductores</h1>
         <hr />
         <div className='row'>
           <div className="col-sm-12 col-md-12 col-lg-7">
-            <h4 className="navbar-brand"> Lista de Usuarios </h4>
-            <UserInfo
-              userTotal={userTotal}
+            <h4 className="navbar-brand"> Lista de Conductores </h4>
+            <DriverInfo
+              driverTotal={driverTotal}
             />
-            <Usersearch
-              usersSearch={usersSearch}
-              setUsersSearch={setUsersSearch}
+            <DriverSearch
+              driverSearch={driverSearch}
+              setDriverSearch={setDriverSearch}
             />
             <ul>
               <hr />
               {
-                (searchUser.length <= 0) ? <h5>No hay datos</h5>
-                  : searchUser?.map((user) => (
-                    <UserList
-                      key={user.idUser}
-                      data={user}
-                      onDelete={() => onDelete(user.id)}
-                      onUpdate={() => editUser(user)}
+                (searchDrivers.length <= 0) ? <h5>No hay datos</h5>
+                  : searchDrivers?.map((driver) => (
+                    <DriverList
+                      key={driver.id}
+                      data={driver}
+                      onDelete={() => onDelete(driver.id)}
+                      onUpdate={() => editUser(driver)}
                     />
                   )
                   )
@@ -145,13 +150,13 @@ export const Users = () => {
               <div className="mb-1">
                 <label className="form-label">Nombres Completos</label>
                 <input required type="text" className="form-control" id="name" name='name'
-                  defaultValue={editMode ? nameUser : ""}></input>
+                  defaultValue={editMode ? nameDriver : ""}></input>
               </div>
-              <div className="mb-1">
+              {/* <div className="mb-1">
                 <label className="form-label">Email</label>
                 <input required type="email" className="form-control" id="mail" name='mail'
                   defaultValue={editMode ? emailUser : ""}></input>
-              </div>
+              </div> */}
 
               {/* <div className="mb-2">
                 <label className="form-label">Role</label>

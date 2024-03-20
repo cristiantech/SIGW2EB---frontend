@@ -3,15 +3,17 @@ import { BrowserRouter, useRoutes } from 'react-router-dom'
 
 import {Users} from '../Users/index';
 import { Home } from '../Home/Index';
-import { Books } from '../Books/index';
+import { Drivers } from '../Drivers/index';
+import { PackagesTras } from '../Package/index';
 import './App.css'
 import { Navbar } from '../Components/Navbar';
 
 const Approutes = () => {
   let routes = useRoutes([
     { path: '/', element: <Home />, },
-    { path: '/books', element: <Books />, },
+    { path: '/package', element: <PackagesTras />, },
     { path: '/users', element: <Users />, },
+    { path: '/drivers', element: <Drivers />, },
   ])
   return routes;
 }
